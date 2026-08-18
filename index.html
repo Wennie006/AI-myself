@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wennie · 个人主页</title>
+<style>
+  :root {
+    --accent: #3b82f6;
+    --accent-strong: #1d4ed8;
+    --surface: #ffffff;
+    --surface-muted: #f2f6ff;
+    --surface-hero: #f7faff;
+    --text: #1f2937;
+    --text-muted: #64748b;
+    --border: #e1e8f7;
+    --shadow: rgba(59, 130, 246, 0.08);
+    --radius: 16px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --accent: #5b93ff;
+      --accent-strong: #8fb4ff;
+      --surface: #141a24;
+      --surface-muted: #1b2432;
+      --surface-hero: #171f2b;
+      --text: #e7ecf5;
+      --text-muted: #94a1b8;
+      --border: #263041;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --accent: #5b93ff;
+    --accent-strong: #8fb4ff;
+    --surface: #141a24;
+    --surface-muted: #1b2432;
+    --surface-hero: #171f2b;
+    --text: #e7ecf5;
+    --text-muted: #94a1b8;
+    --border: #263041;
+    --shadow: rgba(0, 0, 0, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(180deg, var(--surface-hero) 0%, var(--surface) 320px);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 32px 20px 64px;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  .avatar {
+    width: 84px;
+    height: 84px;
+    min-width: 84px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 600;
+    box-shadow: 0 4px 14px var(--shadow);
+  }
+
+  .hero-text h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    color: var(--text);
+  }
+
+  .hero-text p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14.5px;
+  }
+
+  .tag-row {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 12px;
+    color: var(--accent-strong);
+    background: var(--surface-muted);
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
+
+  /* ---------- Section shared ---------- */
+  section.card {
+    margin-top: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+
+  section.card h2 {
+    margin: 0 0 16px;
+    font-size: 16px;
+    color: var(--accent-strong);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  section.card h2::before {
+    content: "";
+    width: 4px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  /* ---------- Info grid ---------- */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .info-item {
+    background: var(--surface-muted);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+
+  .info-item .label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .info-item .value {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .info-item.full {
+    grid-column: 1 / -1;
+  }
+
+  /* ---------- Chat ---------- */
+  .chat-box {
+    display: flex;
+    flex-direction: column;
+    height: 420px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--surface-muted);
+  }
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .msg {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .msg.bot {
+    align-self: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+    color: var(--text);
+  }
+
+  .msg.user {
+    align-self: flex-end;
+    background: var(--accent);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+  }
+
+  .quick-questions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 16px 12px;
+  }
+
+  .quick-btn {
+    font-size: 12.5px;
+    color: var(--accent-strong);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .quick-btn:hover,
+  .quick-btn:focus-visible {
+    background: var(--surface-muted);
+  }
+
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .chat-input-row input {
+    flex: 1;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+    background: var(--surface);
+    color: var(--text);
+  }
+
+  .chat-input-row input:focus-visible {
+    border-color: var(--accent);
+  }
+
+  .chat-input-row button {
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    padding: 0 18px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .chat-input-row button:hover,
+  .chat-input-row button:focus-visible {
+    background: var(--accent-strong);
+  }
+
+  .quick-btn:focus-visible,
+  .chat-input-row button:focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 2px;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 560px) {
+    .page { padding: 20px 14px 48px; }
+    .hero { flex-direction: column; text-align: center; padding: 22px; }
+    .info-grid { grid-template-columns: 1fr; }
+    .chat-box { height: 380px; }
+    .msg { max-width: 88%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="avatar">W</div>
+    <div class="hero-text">
+      <h1>Wennie</h1>
+      <p>哲学系研究生 · 产品经理实习生 · 学习 AI 中</p>
+      <div class="tag-row">
+        <span class="tag">流行摇滚乐团爱好者</span>
+        <span class="tag">独自旅行</span>
+        <span class="tag">逻辑拆解控</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <section class="card">
+    <h2>关于我</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">身份</div>
+        <div class="value">哲学系研究生 / 产品经理实习生</div>
+      </div>
+      <div class="info-item">
+        <div class="label">正在做</div>
+        <div class="value">整理实习经历，准备秋招，写古希腊哲学毕业论文</div>
+      </div>
+      <div class="info-item">
+        <div class="label">兴趣</div>
+        <div class="value">纪实文学、音乐、燕云十六声、旅行</div>
+      </div>
+      <div class="info-item">
+        <div class="label">关键词</div>
+        <div class="value">爱旅行、喜欢把复杂问题拆解成 step</div>
+      </div>
+      <div class="info-item full">
+        <div class="label">擅长 / 关心方向</div>
+        <div class="value">AI 应用、知识整理、逻辑训练</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Chat -->
+  <section class="card">
+    <h2>找 Wennie 的数字分身聊聊</h2>
+    <div class="chat-box">
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg bot">嗨，我是 Wennie 的数字分身 👋 你可以问我关于我的近况、经历，或者怎么联系到我～</div>
+      </div>
+      <div class="quick-questions">
+        <button class="quick-btn" data-q="你现在在做什么？">你现在在做什么？</button>
+        <button class="quick-btn" data-q="你过去的项目经历是什么？">过去的项目经历？</button>
+        <button class="quick-btn" data-q="怎么联系你？">怎么联系你？</button>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chatInput" placeholder="输入你的问题…" />
+        <button id="chatSend">发送</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 Wennie · 这是一个正在迭代中的个人主页原型</footer>
+</div>
+
+<script>
+  // ---- 简单的关键词匹配数字分身（第一版原型，先跑通逻辑，不接外部模型） ----
+  const KB = [
+    {
+      keywords: ["在做什么", "最近", "近况", "现在"],
+      answer: "我最近主要在三件事：整理产品经理实习期间的经历、打磨简历准备秋招，还有推进我的古希腊哲学毕业论文～ 同时也在自学 AI 相关的东西，挺忙但挺充实的。"
+    },
+    {
+      keywords: ["项目", "经历", "实习", "工作"],
+      answer: "我目前是产品经理实习生，正在整理这段实习期间做过的项目经历，方便秋招时清晰地讲出来。整体思路是：先梳理背景和问题，再拆解我做了什么、遇到的难点、怎么解决的，最后是结果和复盘——我习惯把经历也按 step 来拆解。"
+    },
+    {
+      keywords: ["联系", "微信", "邮箱", "email", "怎么找你", "合作"],
+      answer: "欢迎联系我！具体联系方式（邮箱 / 微信）我会补充在页面上，你也可以先在这里留言，我看到会尽快回复～"
+    },
+    {
+      keywords: ["身份", "职业", "你是谁", "介绍一下自己", "自我介绍"],
+      answer: "我是 Wennie，哲学系研究生，目前是产品经理实习生，正在学习 AI。业余爱好流行摇滚乐团和独自旅行，喜欢把复杂问题拆解成一步一步的 step 来解决。"
+    },
+    {
+      keywords: ["擅长", "关心", "方向", "AI"],
+      answer: "我比较关心和擅长的方向是 AI 应用、知识整理和逻辑训练——这也是我最近在系统学习的部分。"
+    },
+    {
+      keywords: ["兴趣", "爱好", "旅行", "音乐", "燕云"],
+      answer: "我喜欢读纪实文学、听流行摇滚乐团的音乐、玩《燕云十六声》，也很喜欢独自旅行，旅行大概是最能代表我的一个标签～"
+    },
+    {
+      keywords: ["论文", "哲学", "古希腊"],
+      answer: "我的毕业论文方向是古希腊哲学，目前正在推进写作阶段。"
+    },
+    {
+      keywords: ["秋招", "求职", "简历"],
+      answer: "我正在准备秋招，整理实习经历、打磨简历是这段时间的重点。"
+    }
+  ];
+
+  const FALLBACK = "这个问题我还没准备好答案，不过你可以试试问我「你现在在做什么」「过去的项目经历」或「怎么联系你」～";
+
+  function matchAnswer(text) {
+    const q = text.trim();
+    for (const item of KB) {
+      if (item.keywords.some(k => q.includes(k))) {
+        return item.answer;
+      }
+    }
+    return FALLBACK;
+  }
+
+  const chatMessages = document.getElementById("chatMessages");
+  const chatInput = document.getElementById("chatInput");
+  const chatSend = document.getElementById("chatSend");
+
+  function appendMsg(text, who) {
+    const div = document.createElement("div");
+    div.className = "msg " + who;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function handleSend(text) {
+    const q = (text !== undefined ? text : chatInput.value).trim();
+    if (!q) return;
+    appendMsg(q, "user");
+    chatInput.value = "";
+    setTimeout(() => {
+      appendMsg(matchAnswer(q), "bot");
+    }, 300);
+  }
+
+  chatSend.addEventListener("click", () => handleSend());
+  chatInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") handleSend();
+  });
+  document.querySelectorAll(".quick-btn").forEach(btn => {
+    btn.addEventListener("click", () => handleSend(btn.dataset.q));
+  });
+</script>
+</body>
+</html>
