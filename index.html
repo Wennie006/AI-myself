@@ -170,6 +170,72 @@
     grid-column: 1 / -1;
   }
 
+  .mail-link {
+    color: var(--accent-strong);
+    text-decoration: none;
+  }
+
+  .mail-link:hover,
+  .mail-link:focus-visible {
+    text-decoration: underline;
+  }
+
+  /* ---------- Projects ---------- */
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .project-item {
+    background: var(--surface-muted);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+
+  .project-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .project-head h3 {
+    margin: 0;
+    font-size: 15px;
+    color: var(--text);
+  }
+
+  .project-time {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .project-role,
+  .project-summary {
+    margin: 8px 0 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .project-steps {
+    margin: 10px 0 0;
+    padding-left: 18px;
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  .project-steps li + li {
+    margin-top: 4px;
+  }
+
+  .project-note {
+    margin: 2px 0 0;
+    font-size: 12.5px;
+    color: var(--text-muted);
+  }
+
   /* ---------- Chat ---------- */
   .chat-box {
     display: flex;
@@ -212,6 +278,12 @@
     background: var(--accent);
     color: #ffffff;
     border-bottom-right-radius: 4px;
+  }
+
+  .chat-status {
+    padding: 0 16px 8px;
+    font-size: 12px;
+    color: var(--text-muted);
   }
 
   .quick-questions {
@@ -259,6 +331,12 @@
 
   .chat-input-row input:focus-visible {
     border-color: var(--accent);
+  }
+
+  .chat-input-row input:disabled,
+  .chat-input-row button:disabled {
+    opacity: 0.6;
+    cursor: default;
   }
 
   .chat-input-row button {
@@ -337,10 +415,35 @@
         <div class="label">关键词</div>
         <div class="value">爱旅行、喜欢把复杂问题拆解成 step</div>
       </div>
-      <div class="info-item full">
+      <div class="info-item">
         <div class="label">擅长 / 关心方向</div>
         <div class="value">AI 应用、知识整理、逻辑训练</div>
       </div>
+      <div class="info-item">
+        <div class="label">联系方式</div>
+        <div class="value"><a class="mail-link" href="mailto:yunwen0327@gmail.com">yunwen0327@gmail.com</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects -->
+  <section class="card">
+    <h2>项目经历</h2>
+    <div class="project-list">
+      <article class="project-item">
+        <div class="project-head">
+          <h3>产品经理实习项目（待补充项目名）</h3>
+          <span class="project-time">时间段 · 待补充</span>
+        </div>
+        <p class="project-role">角色：产品经理实习生</p>
+        <p class="project-summary">一句话概述：待补充——例如负责了什么模块 / 解决了什么问题。</p>
+        <ul class="project-steps">
+          <li>Step 1：待补充（背景与问题）</li>
+          <li>Step 2：待补充（我做了什么）</li>
+          <li>Step 3：待补充（结果与复盘）</li>
+        </ul>
+      </article>
+      <p class="project-note">这部分还在整理中，欢迎在下方直接问数字分身，或邮件联系我要完整版项目介绍。</p>
     </div>
   </section>
 
@@ -351,6 +454,7 @@
       <div class="chat-messages" id="chatMessages">
         <div class="msg bot">嗨，我是 Wennie 的数字分身 👋 你可以问我关于我的近况、经历，或者怎么联系到我～</div>
       </div>
+      <div class="chat-status" id="chatStatus" hidden>对方正在输入…</div>
       <div class="quick-questions">
         <button class="quick-btn" data-q="你现在在做什么？">你现在在做什么？</button>
         <button class="quick-btn" data-q="你过去的项目经历是什么？">过去的项目经历？</button>
@@ -367,57 +471,14 @@
 </div>
 
 <script>
-  // ---- 简单的关键词匹配数字分身（第一版原型，先跑通逻辑，不接外部模型） ----
-  const KB = [
-    {
-      keywords: ["在做什么", "最近", "近况", "现在"],
-      answer: "我最近主要在三件事：整理产品经理实习期间的经历、打磨简历准备秋招，还有推进我的古希腊哲学毕业论文～ 同时也在自学 AI 相关的东西，挺忙但挺充实的。"
-    },
-    {
-      keywords: ["项目", "经历", "实习", "工作"],
-      answer: "我目前是产品经理实习生，正在整理这段实习期间做过的项目经历，方便秋招时清晰地讲出来。整体思路是：先梳理背景和问题，再拆解我做了什么、遇到的难点、怎么解决的，最后是结果和复盘——我习惯把经历也按 step 来拆解。"
-    },
-    {
-      keywords: ["联系", "微信", "邮箱", "email", "怎么找你", "合作"],
-      answer: "欢迎联系我！具体联系方式（邮箱 / 微信）我会补充在页面上，你也可以先在这里留言，我看到会尽快回复～"
-    },
-    {
-      keywords: ["身份", "职业", "你是谁", "介绍一下自己", "自我介绍"],
-      answer: "我是 Wennie，哲学系研究生，目前是产品经理实习生，正在学习 AI。业余爱好流行摇滚乐团和独自旅行，喜欢把复杂问题拆解成一步一步的 step 来解决。"
-    },
-    {
-      keywords: ["擅长", "关心", "方向", "AI"],
-      answer: "我比较关心和擅长的方向是 AI 应用、知识整理和逻辑训练——这也是我最近在系统学习的部分。"
-    },
-    {
-      keywords: ["兴趣", "爱好", "旅行", "音乐", "燕云"],
-      answer: "我喜欢读纪实文学、听流行摇滚乐团的音乐、玩《燕云十六声》，也很喜欢独自旅行，旅行大概是最能代表我的一个标签～"
-    },
-    {
-      keywords: ["论文", "哲学", "古希腊"],
-      answer: "我的毕业论文方向是古希腊哲学，目前正在推进写作阶段。"
-    },
-    {
-      keywords: ["秋招", "求职", "简历"],
-      answer: "我正在准备秋招，整理实习经历、打磨简历是这段时间的重点。"
-    }
-  ];
-
-  const FALLBACK = "这个问题我还没准备好答案，不过你可以试试问我「你现在在做什么」「过去的项目经历」或「怎么联系你」～";
-
-  function matchAnswer(text) {
-    const q = text.trim();
-    for (const item of KB) {
-      if (item.keywords.some(k => q.includes(k))) {
-        return item.answer;
-      }
-    }
-    return FALLBACK;
-  }
-
+  // ---- 数字分身聊天：调用后端 /api/chat，由后端转发给 Claude API ----
   const chatMessages = document.getElementById("chatMessages");
+  const chatStatus = document.getElementById("chatStatus");
   const chatInput = document.getElementById("chatInput");
   const chatSend = document.getElementById("chatSend");
+
+  const history = []; // {role: "user"|"assistant", content: string}[]
+  let sending = false;
 
   function appendMsg(text, who) {
     const div = document.createElement("div");
@@ -425,16 +486,47 @@
     div.textContent = text;
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    return div;
   }
 
-  function handleSend(text) {
+  function setSending(isSending) {
+    sending = isSending;
+    chatStatus.hidden = !isSending;
+    chatSend.disabled = isSending;
+    chatInput.disabled = isSending;
+  }
+
+  async function handleSend(text) {
+    if (sending) return;
     const q = (text !== undefined ? text : chatInput.value).trim();
     if (!q) return;
+
     appendMsg(q, "user");
     chatInput.value = "";
-    setTimeout(() => {
-      appendMsg(matchAnswer(q), "bot");
-    }, 300);
+    setSending(true);
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: q, history }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        appendMsg(data.error || "数字分身暂时开小差了，请稍后再试～", "bot");
+        return;
+      }
+
+      appendMsg(data.reply, "bot");
+      history.push({ role: "user", content: q });
+      history.push({ role: "assistant", content: data.reply });
+    } catch (err) {
+      appendMsg("网络好像断开了，请稍后再试，或直接邮件联系我：yunwen0327@gmail.com", "bot");
+    } finally {
+      setSending(false);
+      chatInput.focus();
+    }
   }
 
   chatSend.addEventListener("click", () => handleSend());

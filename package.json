@@ -1,0 +1,16 @@
+{
+  "name": "wennie-homepage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Wennie 的个人主页：静态前端 + 一个把访客消息转发给 Claude API 的小后端，用来驱动数字分身聊天区。",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.68.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0"
+  }
+}
